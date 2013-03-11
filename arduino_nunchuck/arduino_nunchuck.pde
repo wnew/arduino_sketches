@@ -1,4 +1,4 @@
-# http://hacknmod.com/hack/real-time-diy-pan-tilt-camera-with-arduino-wii-nunchuck/
+// http://hacknmod.com/hack/real-time-diy-pan-tilt-camera-with-arduino-wii-nunchuck/
 
 #include <Wire.h>
 #include <string.h>
