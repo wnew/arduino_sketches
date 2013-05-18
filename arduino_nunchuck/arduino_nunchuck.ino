@@ -21,10 +21,10 @@ long lastPulse2 = 0;
 int z_button = 0;
 int c_button = 0;
 
-int refreshTime = 20;
+int refreshTime = 200;
 
-int minPulse = 1000;
-int minPulse2 = 500;
+int minPulse = 800;
+int minPulse2 = 800;
 
 int dtime=10;
 
@@ -36,7 +36,7 @@ long pwbuffpos2 = 0;
 
 void setup()
 {
-    beginSerial (19200);
+    Serial.begin (19200);
     Wire.begin ();
     nunchuck_init ();
     pinMode(servoPin, OUTPUT);
@@ -50,15 +50,15 @@ void setup()
 void nunchuck_init()
 {
     Wire.beginTransmission (0x52);
-    Wire.send (0x40);
-    Wire.send (0x00);  
+    Wire.write (0x40);
+    Wire.write (0x00);  
     Wire.endTransmission ();
 }
 
 void send_zero()
 {
     Wire.beginTransmission (0x52);
-    Wire.send (0x00);
+    Wire.write (0x00);
     Wire.endTransmission ();
 }
 
@@ -76,7 +76,7 @@ void loop()
         Wire.requestFrom (0x52, 6);
 
         while (Wire.available ()) {
-            outbuf[cnt] = nunchuk_decode_byte (Wire.receive ());
+            outbuf[cnt] = nunchuk_decode_byte (Wire.read ());
             digitalWrite (ledPin, HIGH);
             cnt++;
         }
