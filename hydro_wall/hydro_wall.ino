@@ -8,19 +8,14 @@
 //                 water the soil. The output from the sensors is written to //
 //                 an SD Card and also displayed on a 5110 LCD screen.       //
 //                                                                           //
-//    ToDo: 1. Display the sensor order on the LCD                           //
-//          2. Test the SD data with the solenoid state                      //
-//          3. Add the timing for the solenoid (On/Off)                      //
-//          4. Test the timing for the polling                               //
-//                                                                           //
 //                                                                           //
 //===========================================================================//
 //===========================================================================//
 
 
-//============
+//===========
 // #includes
-//============
+//===========
 #include <SPI.h>
 #include <SD.h>
 #include <TimerOne.h>
@@ -141,7 +136,7 @@ void pollSensors (void) {
                     + String(solenoidState);
   
   // write out the state of the solenoid
-  bool solenoidState = solenoidAlgm (sensor0, sensor1, sensor2, sensor3);
+  bool solenoidState = solenoidAlgm (sensor0, sensor1, sensor2, sensor3)
   digitalWrite(solenoidPin, solenoidState);
 
   writeToLCD(sensor0, sensor1, sensor2, sensor3, solenoidState);
@@ -155,7 +150,12 @@ void pollSensors (void) {
 //===============================================
 void writeToSD (String dataString) {
   dataFile.println(dataString);
-  // The flush function writes outthe file to the SD card
+  // The following line will 'save' the file to the SD card after every
+  // line of data - this will use more power and slow down how much data
+  // you can read but it's safer! 
+  // If you want to speed up the system, remove the call to flush() and it
+  // will save the file only every 512 bytes - every time a sector on the 
+  // SD card is filled with data.
   dataFile.flush();
 }
 
@@ -163,7 +163,7 @@ void writeToSD (String dataString) {
 //===========================================
 // Writes the sesnor percentages to the lcd
 //===========================================
-void writeToLCD(int sensor0, int sensor1, int sensor2, int sensor3, bool solenoidState) {
+void writeToLCD(int sensor0, int sensor1, int sensor2, int sensor3) {
   // congifure lcd 
   display.clearDisplay();
   display.setTextSize(2);
@@ -172,7 +172,6 @@ void writeToLCD(int sensor0, int sensor1, int sensor2, int sensor3, bool solenoi
   // write display text to buffer
   display.println(String(sensor0) + " " +String(sensor1));
   display.println(String(sensor2) + " " +String(sensor3));
-  display.println("Water : " + String(solenoidState));
   // send to display
   display.display();
 }
