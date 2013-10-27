@@ -53,8 +53,8 @@ File dataFile;
 //==============
 // User Config
 //==============
-const long pollTime = 10; // time in seconds between polling the sensors
-const long solenoidOnTime = 5; // time in seconds that the solenoid stays on
+const long pollTime = 4; // time in seconds between polling the sensors
+const long solenoidOnTime = 2; // time in seconds that the solenoid stays on
 
 
 //==================
@@ -76,18 +76,17 @@ void setup()
   // lcd setup
   display.begin();
   display.setContrast(20);
+  display.clearDisplay();
+  display.display();
 }
 
-
+long lastPollTime = 0;
 //========================
 // Main Program Loop
 //========================
 void loop()
 {
-  // call the pollTime funtion when the timer expires
-  //Timer1.initialize(pollTime * 1000000);
-  //Timer1.attachInterrupt(pollSensors);
-  if (pollTime*1000 > millis());
+  pollSensors();
 }
 
 
@@ -125,10 +124,12 @@ void setupSD () {
 //====================
 void pollSensors (void) {
   // read each of the analog pins and map to a percentage (inverted)
-  int sensor0 = map(analogRead(A0), 1023, 250, 0, 100);
-  int sensor1 = map(analogRead(A1), 1023, 250, 0, 100);
-  int sensor2 = map(analogRead(A2), 1023, 250, 0, 100);
-  int sensor3 = map(analogRead(A3), 1023, 250, 0, 100);
+  int sensor0 = map(analogRead(A0), 1023, 220, 0, 100);
+  int sensor1 = map(analogRead(A1), 1023, 220, 0, 100);
+  int sensor2 = map(analogRead(A2), 1023, 220, 0, 100);
+  int sensor3 = map(analogRead(A3), 1023, 220, 0, 100);
+  
+  bool solenoidState = solenoidAlgm (sensor0, sensor1, sensor2, sensor3);
   
   // put all sensor values into a comma delimited string
   String dataString = String(sensor0) + ", " + String(sensor1) + ", " 
@@ -136,12 +137,18 @@ void pollSensors (void) {
                     + String(solenoidState);
   
   // write out the state of the solenoid
-  bool solenoidState = solenoidAlgm (sensor0, sensor1, sensor2, sensor3)
-  digitalWrite(solenoidPin, solenoidState);
-
   writeToLCD(sensor0, sensor1, sensor2, sensor3, solenoidState);
   writeToSD (dataString);
   Serial.println(dataString);
+  
+  // write the output of the solenoid algor to the solenoid pin
+  digitalWrite(solenoidPin, solenoidState);
+  // wait the set amount of configured amount of time
+  delay(solenoidOnTime*1000);
+  // turn off the solenoid
+  digitalWrite(solenoidPin, 0);
+  // delay the remaining time until the next poll
+  delay((pollTime - solenoidOnTime)*1000);
 }
 
 
@@ -163,7 +170,7 @@ void writeToSD (String dataString) {
 //===========================================
 // Writes the sesnor percentages to the lcd
 //===========================================
-void writeToLCD(int sensor0, int sensor1, int sensor2, int sensor3) {
+void writeToLCD(int sensor0, int sensor1, int sensor2, int sensor3, int solenoidState) {
   // congifure lcd 
   display.clearDisplay();
   display.setTextSize(2);
@@ -172,6 +179,13 @@ void writeToLCD(int sensor0, int sensor1, int sensor2, int sensor3) {
   // write display text to buffer
   display.println(String(sensor0) + " " +String(sensor1));
   display.println(String(sensor2) + " " +String(sensor3));
+  display.setTextSize(1);
+  display.println  (" Water   1  2");
+  if (solenoidState == 0)
+    display.println("  Off    3  4");
+  else
+    display.println("  On     3  4");
+  display.println();
   // send to display
   display.display();
 }
