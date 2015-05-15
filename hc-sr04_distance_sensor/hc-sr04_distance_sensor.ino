@@ -1,5 +1,5 @@
 /*
-HC-SR04 Ping distance sensor]
+HC-SR04 Ping distance sensor
 VCC to arduino 5v GND to arduino GND
 Echo to Arduino pin 13 Trig to Arduino pin 12
 Red POS to Arduino pin 11
@@ -16,6 +16,7 @@ Some code and wiring inspired by http://en.wikiversity.org/wiki/User:Dstaub/robo
 #define led2 10
 
 void setup() {
+<<<<<<< HEAD
   Serial.begin (9600);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
