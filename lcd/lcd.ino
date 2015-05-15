@@ -37,8 +37,8 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(8, 7, 6, 5, 4);
 int menu_state = 0;
 int select_state = 1;
 
-static unsigned char PROGMEM logo16_glcd_bmp[] =
-{ B00000000, B11000000,
+static unsigned char PROGMEM logo16_glcd_bmp[] = {
+  B00000000, B11000000,
   B00000001, B11000000,
   B00000001, B11000000,
   B00000011, B11100000,
@@ -53,9 +53,10 @@ static unsigned char PROGMEM logo16_glcd_bmp[] =
   B00111111, B11110000,
   B01111100, B11110000,
   B01110000, B01110000,
-  B00000000, B00110000 };
+  B00000000, B00110000
+};
 
-void setup()   {
+void setup() {
   Serial.begin(9600);
   Serial.println("Start");
 

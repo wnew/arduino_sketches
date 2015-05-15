@@ -34,8 +34,7 @@ long pwbuffpos = 0;
 long pwbuff2[pwbuffsize];
 long pwbuffpos2 = 0;
 
-void setup()
-{
+void setup() {
     Serial.begin (19200);
     Wire.begin ();
     nunchuck_init ();
@@ -47,16 +46,14 @@ void setup()
     Serial.print ("Finished setup\n");
 }
 
-void nunchuck_init()
-{
+void nunchuck_init() {
     Wire.beginTransmission (0x52);
     Wire.write (0x40);
     Wire.write (0x00);  
     Wire.endTransmission ();
 }
 
-void send_zero()
-{
+void send_zero() {
     Wire.beginTransmission (0x52);
     Wire.write (0x00);
     Wire.endTransmission ();
@@ -64,8 +61,7 @@ void send_zero()
 
 int t = 0;
 
-void loop()
-{
+void loop() {
     t++;
     long last = millis();
 
@@ -82,9 +78,7 @@ void loop()
         }
 
         if (cnt >= 5) {
-
             //            printNunchuckData();
-
             int z_button = 0;
             int c_button = 0;
 
@@ -144,8 +138,7 @@ void updateServo() {
 }
 
 int i=0;
-void printNunchuckData()
-{
+void printNunchuckData() {
     int joy_x_axis = outbuf[0];
     int joy_y_axis = outbuf[1];
     int accel_x_axis = outbuf[2]; // * 2 * 2; 
@@ -204,13 +197,12 @@ void printNunchuckData()
     i++;
 }
 
-char nunchuk_decode_byte (char x)
-{
+char nunchuk_decode_byte(char x) {
     x = (x ^ 0x17) + 0x17;
     return x;
 }
 
-void muovi (){
+void muovi() {
     float tilt = (700 - outbuf[3]*2*2);
     float tilt2 = outbuf[2]*2*2;
 
@@ -223,19 +215,17 @@ void muovi (){
     pwbuff[pwbuffpos] = pulseWidth;
     pwbuff2[pwbuffpos2] = pulseWidth2;
     
-    if( ++pwbuffpos == pwbuffsize ) pwbuffpos = 0;
-    if( ++pwbuffpos2 == pwbuffsize ) pwbuffpos2 = 0;
-
+    if ( ++pwbuffpos == pwbuffsize ) pwbuffpos = 0;
+    if ( ++pwbuffpos2 == pwbuffsize ) pwbuffpos2 = 0;
 
     pulseWidth=0;
     pulseWidth2=0;
 
-    for( int p=0; p<pwbuffsize; p++ ){
+    for ( int p=0; p<pwbuffsize; p++ ) {
         pulseWidth += pwbuff[p];
         pulseWidth2 += pwbuff2[p];
     }
 
     pulseWidth /= pwbuffsize;
     pulseWidth2 /= pwbuffsize;
-
 }

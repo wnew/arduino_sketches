@@ -10,8 +10,7 @@ Servo myservo;  // create servo object to control a servo
 int pos = 0;    // variable to store the servo position 
 int interval = 2; //
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
   pinMode(4, INPUT);
   pinMode(5, INPUT);
@@ -21,8 +20,7 @@ void setup()
 } 
 
 
-void loop() 
-{
+void loop() {
   if (digitalRead(4) == HIGH) {
     pos = pos + interval;
     Serial.write("Button 1\n");
